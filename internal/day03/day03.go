@@ -1,10 +1,8 @@
-package main
+package day03
 
 import (
 	"bufio"
-	"fmt"
 	"io"
-	"os"
 	"regexp"
 	"strconv"
 )
@@ -13,14 +11,7 @@ var EXTRACT_MULS = regexp.MustCompile(`mul\(\d+,\d+\)`)
 var EXTRACT_ENABLED_MULS = regexp.MustCompile(`(mul\(\d+,\d+\)|do\(\)|don\'t\(\))`)
 var EXTRACT_MUL_ARGS = regexp.MustCompile(`\d+`)
 
-func main() {
-	f, err := os.Open("input.txt")
-	check(err)
-	p1, p2 := execute(f)
-	fmt.Println("Result: part1 =", p1, " part2 =", p2)
-}
-
-func execute(input io.Reader) (int, int) {
+func Execute(input io.Reader) (int, int) {
 	program := readProgram(input)
 	return addTheMuls(program), runProgram(program)
 }

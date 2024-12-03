@@ -1,24 +1,14 @@
-package main
+package day01
 
 import (
 	"bufio"
-	"fmt"
 	"io"
-	"os"
 	"sort"
 	"strconv"
 	"strings"
 )
 
-func main() {
-	f, err := os.Open("cmd/day01/input.txt")
-	check(err)
-	defer f.Close()
-	part1, part2 := execute(f)
-	fmt.Println("Result: part1 =", part1, ", part2 =", part2)
-}
-
-func execute(input io.Reader) (int, int) {
+func Execute(input io.Reader) (int, int) {
 	list1, list2 := readIntSlicesFromInput(input)
 	return part1(list1, list2), part2(list1, list2)
 }

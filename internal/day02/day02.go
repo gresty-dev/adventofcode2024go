@@ -1,24 +1,15 @@
-package main
+package day02
 
 import (
 	"bufio"
-	"fmt"
 	"io"
-	"os"
 	"strconv"
 	"strings"
 )
 
 type dampener func(int) int
 
-func main() {
-	f, err := os.Open("input.txt")
-	check(err)
-	p1, p2 := execute(f)
-	fmt.Println("Result: part1 =", p1, " part2 =", p2)
-}
-
-func execute(input io.Reader) (int, int) {
+func Execute(input io.Reader) (int, int) {
 	reports := readReports(input)
 	return countSafeReports(reports), countSafeDampReports(reports)
 }

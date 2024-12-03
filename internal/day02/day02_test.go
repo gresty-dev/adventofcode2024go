@@ -1,4 +1,4 @@
-package main
+package day02
 
 import (
 	"strings"
@@ -14,7 +14,7 @@ var input = `7 6 4 2 1
 
 func Test_execute(t *testing.T) {
 	inputReader := strings.NewReader(input)
-	part1, part2 := execute(inputReader)
+	part1, part2 := Execute(inputReader)
 	if part1 != 2 {
 		t.Error("incorrect result for part 1: expected 2, got ", part1)
 	}
