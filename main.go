@@ -8,6 +8,7 @@ import (
 	day01 "go.gresty.dev/aoc2024/internal/day01"
 	day02 "go.gresty.dev/aoc2024/internal/day02"
 	day03 "go.gresty.dev/aoc2024/internal/day03"
+	day04 "go.gresty.dev/aoc2024/internal/day04"
 	lib "go.gresty.dev/aoc2024/internal/lib"
 )
 
@@ -15,6 +16,7 @@ var solvers = map[int]lib.Solver{
 	1: day01.Execute,
 	2: day02.Execute,
 	3: day03.Execute,
+	4: day04.Execute,
 }
 
 func main() {
