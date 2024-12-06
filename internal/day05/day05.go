@@ -16,7 +16,7 @@ func Execute(input io.Reader) (int, int) {
 	sumInOrder := 0
 	sumReorder := 0
 	for _, u := range updates {
-		if validateUpdate(rules, u) {
+		if inOrder(rules, u) {
 			sumInOrder += middleValue(u)
 		} else {
 			reorder(u, rules)
@@ -30,31 +30,20 @@ func middleValue(update updatetype) int {
 	return update[(len(update)-1)/2]
 }
 
-func validateUpdate(rules map[int]ruletype, update updatetype) bool {
+func inOrder(rules map[int]ruletype, update updatetype) bool {
 	for i := 1; i < len(update); i++ {
-		if isInOrder(update[i-1], update[i], rules) {
-			continue
+		_, ok := rules[update[i-1]][update[i]]
+		if !ok {
+			return false
 		}
-		return false
 	}
 	return true
 }
 
-func isInOrder(first, second int, rules map[int]ruletype) bool {
-	_, ok := rules[second][first]
-	return !ok
-}
-
 func reorder(update updatetype, rules map[int]ruletype) {
 	sort.Slice(update, func(i, j int) bool {
-		first := update[i]
-		second := update[j]
-		_, ok := rules[first][second]
-		if ok {
-			return true
-		}
-		_, ok = rules[second][first]
-		return !ok
+		_, ok := rules[update[i]][update[j]]
+		return ok // enough, cos every relation is defined one way or the other
 	})
 }
 
