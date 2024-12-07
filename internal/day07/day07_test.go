@@ -20,10 +20,10 @@ func Test_execute(t *testing.T) {
 	e1 := any(int64(3749))
 	e2 := any(int64(11387))
 	r1, r2 := Execute(inputReader)
-	if r1 != e1 {
-		t.Error("incorrect result for part 1: expected", e1, "got", r1)
+	if r1.Answer() != e1 {
+		t.Error("incorrect result for part 1: expected", e1, "got", r1.Answer())
 	}
-	if r2 != e2 {
-		t.Error("incorrect result for part 2: expected", e2, "got", r2)
+	if r2.Answer() != e2 {
+		t.Error("incorrect result for part 2: expected", e2, "got", r2.Answer())
 	}
 }

@@ -6,6 +6,8 @@ import (
 	"io"
 	"strconv"
 	"strings"
+
+	aoc "go.gresty.dev/aoc2024/internal/lib"
 )
 
 type equation struct {
@@ -13,24 +15,34 @@ type equation struct {
 	factors  []int64
 }
 
-func Execute(input io.Reader) (any, any) {
+func Execute(input io.Reader) (aoc.Result, aoc.Result) {
 	equations := readInput(input)
 
 	var sum1 int64
-	for _, equation := range equations {
-		if calculate(equation.solution, 0, equation.factors) {
-			sum1 += equation.solution
-		}
-	}
+	recalculate := []equation{}
 
-	var sum2 int64
-	for _, equation := range equations {
-		if calculateWithConcat(equation.solution, 0, equation.factors) {
-			sum2 += equation.solution
+	result1 := aoc.NewResult(func() any {
+		for _, equation := range equations {
+			if calculate(equation.solution, 0, equation.factors) {
+				sum1 += equation.solution
+			} else {
+				recalculate = append(recalculate, equation)
+			}
 		}
-	}
+		return sum1
+	})
 
-	return sum1, sum2
+	result2 := aoc.NewResult(func() any {
+		var sum2 int64
+		for _, equation := range recalculate {
+			if calculateWithConcat(equation.solution, 0, equation.factors) {
+				sum2 += equation.solution
+			}
+		}
+		return sum1 + sum2
+	})
+
+	return result1, result2
 }
 
 func calculate(target int64, sofar int64, factors []int64) bool {

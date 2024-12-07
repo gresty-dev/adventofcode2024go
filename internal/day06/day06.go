@@ -11,16 +11,16 @@ type void struct{}
 
 var empty void
 
-type guard struct {
+type Guard struct {
 	image.Point
 	*aoc.Direction
 }
 
-func (g *guard) turnRight() {
+func (g *Guard) turnRight() {
 	g.Direction = g.Direction.Next90()
 }
 
-func (g *guard) move() {
+func (g *Guard) move() {
 	g.Point = g.Point.Add(g.Direction.Point)
 }
 
@@ -29,20 +29,30 @@ type visitedCell struct {
 	aoc.Direction
 }
 
-func Execute(input io.Reader) (any, any) {
+func Execute(input io.Reader) (aoc.Result, aoc.Result) {
 	grid := aoc.ReadGrid(input)
-	guardLoc, ok := grid.FindFirst('^')
-	if !ok {
-		panic("no guard found!")
-	}
-	guard := guard{guardLoc, &aoc.Up}
 
-	visited := walk(guard, grid)
+	var guard Guard
+	var visited map[image.Point]void
 
-	return len(visited), loops(guard, grid, visited)
+	result1 := aoc.NewResult(func() any {
+		guardLoc, ok := grid.FindFirst('^')
+		if !ok {
+			panic("no guard found!")
+		}
+		guard = Guard{guardLoc, &aoc.Up}
+		visited = walk(guard, grid)
+		return len(visited)
+	})
+
+	result2 := aoc.NewResult(func() any {
+		return loops(guard, grid, visited)
+	})
+
+	return result1, result2
 }
 
-func walk(guard guard, grid aoc.Grid) map[image.Point]void {
+func walk(guard Guard, grid aoc.Grid) map[image.Point]void {
 	visited := make(map[image.Point]void)
 	for grid.InGrid(guard.Point) {
 		visited[guard.Point] = empty
@@ -56,7 +66,7 @@ func walk(guard guard, grid aoc.Grid) map[image.Point]void {
 	return visited
 }
 
-func loops(guard guard, grid aoc.Grid, obstacles map[image.Point]void) int {
+func loops(guard Guard, grid aoc.Grid, obstacles map[image.Point]void) int {
 	count := 0
 	for obstacle := range obstacles {
 		if obstacle == guard.Point {
@@ -69,7 +79,7 @@ func loops(guard guard, grid aoc.Grid, obstacles map[image.Point]void) int {
 	return count
 }
 
-func walkWithObstacle(guard guard, grid aoc.Grid, obstacle image.Point) bool {
+func walkWithObstacle(guard Guard, grid aoc.Grid, obstacle image.Point) bool {
 	visited := make(map[visitedCell]void)
 	grid.Set(obstacle, '#')
 	defer grid.Set(obstacle, '.')

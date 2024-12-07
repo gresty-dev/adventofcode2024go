@@ -5,13 +5,22 @@ import (
 	"io"
 	"strconv"
 	"strings"
+
+	aoc "go.gresty.dev/aoc2024/internal/lib"
 )
 
 type dampener func(int) int
 
-func Execute(input io.Reader) (any, any) {
+func Execute(input io.Reader) (aoc.Result, aoc.Result) {
 	reports := readReports(input)
-	return countSafeReports(reports), countSafeDampReports(reports)
+	result1 := aoc.NewResult(func() any {
+		return countSafeReports(reports)
+	})
+	result2 := aoc.NewResult(func() any {
+		return countSafeDampReports(reports)
+	})
+
+	return result1, result2
 }
 
 func countSafeReports(reports [][]int) int {

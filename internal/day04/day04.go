@@ -8,9 +8,15 @@ import (
 	aoc "go.gresty.dev/aoc2024/internal/lib"
 )
 
-func Execute(input io.Reader) (any, any) {
+func Execute(input io.Reader) (aoc.Result, aoc.Result) {
 	grid := aoc.ReadGrid(input)
-	return countXmas(grid), countMasInX(grid)
+	result1 := aoc.NewResult(func() any {
+		return countXmas(grid)
+	})
+	result2 := aoc.NewResult(func() any {
+		return countMasInX(grid)
+	})
+	return result1, result2
 }
 
 func countMasInX(grid aoc.Grid) int {

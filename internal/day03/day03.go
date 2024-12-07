@@ -5,15 +5,23 @@ import (
 	"io"
 	"regexp"
 	"strconv"
+
+	aoc "go.gresty.dev/aoc2024/internal/lib"
 )
 
 var EXTRACT_MULS = regexp.MustCompile(`mul\(\d+,\d+\)`)
 var EXTRACT_ENABLED_MULS = regexp.MustCompile(`(mul\(\d+,\d+\)|do\(\)|don\'t\(\))`)
 var EXTRACT_MUL_ARGS = regexp.MustCompile(`\d+`)
 
-func Execute(input io.Reader) (any, any) {
+func Execute(input io.Reader) (aoc.Result, aoc.Result) {
 	program := readProgram(input)
-	return addTheMuls(program), runProgram(program)
+	result1 := aoc.NewResult(func() any {
+		return addTheMuls(program)
+	})
+	result2 := aoc.NewResult(func() any {
+		return runProgram(program)
+	})
+	return result1, result2
 }
 
 func execute1(input io.Reader) int {

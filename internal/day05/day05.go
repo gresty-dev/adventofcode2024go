@@ -6,12 +6,14 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+
+	aoc "go.gresty.dev/aoc2024/internal/lib"
 )
 
 type ruletype map[int]struct{}
 type updatetype []int
 
-func Execute(input io.Reader) (any, any) {
+func Execute(input io.Reader) (aoc.Result, aoc.Result) {
 	rules, updates := readInput(input)
 	sumInOrder := 0
 	sumReorder := 0
@@ -23,7 +25,7 @@ func Execute(input io.Reader) (any, any) {
 			sumReorder += middleValue(u)
 		}
 	}
-	return sumInOrder, sumReorder
+	return aoc.NewResult(func() any { return sumInOrder }), aoc.NewResult(func() any { return sumReorder })
 }
 
 func middleValue(update updatetype) int {

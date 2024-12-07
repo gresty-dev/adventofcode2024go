@@ -6,11 +6,19 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+
+	aoc "go.gresty.dev/aoc2024/internal/lib"
 )
 
-func Execute(input io.Reader) (any, any) {
+func Execute(input io.Reader) (aoc.Result, aoc.Result) {
 	list1, list2 := readIntSlicesFromInput(input)
-	return part1(list1, list2), part2(list1, list2)
+	result1 := aoc.NewResult(func() any {
+		return part1(list1, list2)
+	})
+	result2 := aoc.NewResult(func() any {
+		return part2(list1, list2)
+	})
+	return result1, result2
 }
 
 func part1(list1 []int, list2 []int) int {

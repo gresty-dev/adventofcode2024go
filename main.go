@@ -49,7 +49,8 @@ func solve(solution lib.Solver, filename string) {
 	f, err := os.Open(filename)
 	check(err)
 	p1, p2 := solution(f)
-	fmt.Println("Result: part1 =", p1, " part2 =", p2)
+	fmt.Println("Part1: ", p1.String())
+	fmt.Println("Part2: ", p2.String())
 }
 
 func check(e error) {

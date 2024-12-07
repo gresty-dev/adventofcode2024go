@@ -14,11 +14,13 @@ var input = `3   4
 
 func Test_execute(t *testing.T) {
 	inputReader := strings.NewReader(input)
-	part1, part2 := Execute(inputReader)
-	if part1 != 11 {
-		t.Error("incorrect result for part 1: expected 11, got ", part1)
+	e1 := any(int(11))
+	e2 := any(int(31))
+	r1, r2 := Execute(inputReader)
+	if r1.Answer() != e1 {
+		t.Error("incorrect result for part 1: expected", e1, "got", r1.Answer())
 	}
-	if part2 != 31 {
-		t.Error("incorrect result for part 2: expected 31, got ", part2)
+	if r2.Answer() != e2 {
+		t.Error("incorrect result for part 2: expected", e2, "got", r2.Answer())
 	}
 }
