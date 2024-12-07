@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func Execute(input io.Reader) (int, int) {
+func Execute(input io.Reader) (any, any) {
 	list1, list2 := readIntSlicesFromInput(input)
 	return part1(list1, list2), part2(list1, list2)
 }

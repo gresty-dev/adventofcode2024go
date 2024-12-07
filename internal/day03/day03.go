@@ -11,7 +11,7 @@ var EXTRACT_MULS = regexp.MustCompile(`mul\(\d+,\d+\)`)
 var EXTRACT_ENABLED_MULS = regexp.MustCompile(`(mul\(\d+,\d+\)|do\(\)|don\'t\(\))`)
 var EXTRACT_MUL_ARGS = regexp.MustCompile(`\d+`)
 
-func Execute(input io.Reader) (int, int) {
+func Execute(input io.Reader) (any, any) {
 	program := readProgram(input)
 	return addTheMuls(program), runProgram(program)
 }

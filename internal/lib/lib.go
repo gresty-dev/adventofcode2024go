@@ -2,4 +2,4 @@ package lib
 
 import "io"
 
-type Solver func(io.Reader) (int, int)
+type Solver func(io.Reader) (any, any)

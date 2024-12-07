@@ -9,7 +9,7 @@ import (
 
 type dampener func(int) int
 
-func Execute(input io.Reader) (int, int) {
+func Execute(input io.Reader) (any, any) {
 	reports := readReports(input)
 	return countSafeReports(reports), countSafeDampReports(reports)
 }

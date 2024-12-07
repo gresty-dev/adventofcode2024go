@@ -29,7 +29,7 @@ type visitedCell struct {
 	aoc.Direction
 }
 
-func Execute(input io.Reader) (int, int) {
+func Execute(input io.Reader) (any, any) {
 	grid := aoc.ReadGrid(input)
 	guardLoc, ok := grid.FindFirst('^')
 	if !ok {

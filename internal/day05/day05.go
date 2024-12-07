@@ -11,7 +11,7 @@ import (
 type ruletype map[int]struct{}
 type updatetype []int
 
-func Execute(input io.Reader) (int, int) {
+func Execute(input io.Reader) (any, any) {
 	rules, updates := readInput(input)
 	sumInOrder := 0
 	sumReorder := 0
