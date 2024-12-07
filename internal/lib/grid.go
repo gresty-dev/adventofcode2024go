@@ -6,29 +6,28 @@ import (
 	"io"
 )
 
-type cellhandler func(row, col int, value byte) bool
-
-// X maps to row, Y maps to column!!
-var Directions = []image.Point{
-	{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1},
-}
+type cellhandler func(loc image.Point, value byte) bool
 
 type Grid struct {
-	cells []string
+	cells [][]byte
 }
 
 func ReadGrid(input io.Reader) Grid {
-	grid := []string{}
+	grid := [][]byte{}
 	scanner := bufio.NewScanner(input)
 	for scanner.Scan() {
 		line := scanner.Text()
-		grid = append(grid, line)
+		grid = append(grid, []byte(line))
 	}
 	return Grid{grid}
 }
 
-func (g Grid) Cell(row, col int) byte {
-	return g.cells[row][col]
+func (g Grid) Cell(loc image.Point) byte {
+	return g.cells[loc.X][loc.Y]
+}
+
+func (g *Grid) Set(loc image.Point, value byte) {
+	g.cells[loc.X][loc.Y] = value
 }
 
 func (g Grid) Columns() int {
@@ -39,36 +38,48 @@ func (g Grid) Rows() int {
 	return len(g.cells)
 }
 
-func (g Grid) ForEachCell(percell cellhandler) {
+func (g Grid) ForEachCell(cellhandler cellhandler) {
 	for r := range g.Rows() {
 		for c := range g.Columns() {
-			if !percell(r, c, g.Cell(r, c)) {
+			loc := image.Point{r, c}
+			if !cellhandler(loc, g.Cell(loc)) {
 				break
 			}
 		}
 	}
 }
 
-func (g Grid) NearBoundary(row, col, dist int) bool {
-	return row <= dist || col <= dist ||
-		row >= g.Rows()-dist-1 || col >= g.Columns()-dist-1
+func (g Grid) NearBoundary(loc image.Point, dist int) bool {
+	return loc.X <= dist || loc.Y <= dist ||
+		loc.X >= g.Rows()-dist-1 || loc.Y >= g.Columns()-dist-1
 }
 
-func (g Grid) InGrid(row, col int) bool {
-	return row >= 0 && row < g.Rows() && col >= 0 && col < g.Columns()
+func (g Grid) InGrid(loc image.Point) bool {
+	return loc.X >= 0 && loc.X < g.Rows() && loc.Y >= 0 && loc.Y < g.Columns()
 }
 
-func (g Grid) WordAt(row, col, length int, dir image.Point) string {
+func (g Grid) FindFirst(target byte) (image.Point, bool) {
+	for r := range g.Rows() {
+		for c := range g.Columns() {
+			loc := image.Point{r, c}
+			if g.Cell(loc) == target {
+				return loc, true
+			}
+		}
+	}
+	return image.Point{0, 0}, false
+}
+
+func (g Grid) WordAt(loc image.Point, length int, dir Direction) string {
 	limit := dir.Mul(length - 1)
-	if !g.InGrid(row+limit.X, col+limit.Y) {
+	if !g.InGrid(loc.Add(limit)) {
 		return ""
 	}
 
 	word := []byte{}
 	for range length {
-		word = append(word, g.Cell(row, col))
-		row += dir.X
-		col += dir.Y
+		word = append(word, g.Cell(loc))
+		loc = loc.Add(dir.Point)
 	}
 	return string(word)
 }

@@ -1,6 +1,7 @@
 package day04
 
 import (
+	"image"
 	"io"
 	"strings"
 
@@ -15,8 +16,8 @@ func Execute(input io.Reader) (int, int) {
 func countMasInX(grid aoc.Grid) int {
 	count := 0
 
-	grid.ForEachCell(func(r, c int, v byte) bool {
-		if !grid.NearBoundary(r, c, 0) && v == 'A' && masInXFound(grid, r, c) {
+	grid.ForEachCell(func(loc image.Point, v byte) bool {
+		if !grid.NearBoundary(loc, 0) && v == 'A' && masInXFound(grid, loc) {
 			count++
 		}
 		return true
@@ -25,24 +26,24 @@ func countMasInX(grid aoc.Grid) int {
 	return count
 }
 
-func masInXFound(grid aoc.Grid, r int, c int) bool {
+func masInXFound(grid aoc.Grid, loc image.Point) bool {
 	var sb strings.Builder
-	sb.WriteByte(grid.Cell(r-1, c-1))
-	sb.WriteByte(grid.Cell(r+1, c+1))
-	sb.WriteByte(grid.Cell(r-1, c+1))
-	sb.WriteByte(grid.Cell(r+1, c-1))
+	sb.WriteByte(grid.Cell(loc.Add(aoc.UpLeft.Point)))
+	sb.WriteByte(grid.Cell(loc.Add(aoc.DownRight.Point)))
+	sb.WriteByte(grid.Cell(loc.Add(aoc.UpRight.Point)))
+	sb.WriteByte(grid.Cell(loc.Add(aoc.DownLeft.Point)))
 	w := sb.String()
 	return w == "MSMS" || w == "SMMS" || w == "MSSM" || w == "SMSM"
 }
 
 func countXmas(grid aoc.Grid) int {
 	count := 0
-	grid.ForEachCell(func(r, c int, v byte) bool {
+	grid.ForEachCell(func(loc image.Point, v byte) bool {
 		if v != 'X' {
 			return true
 		}
 		for _, d := range aoc.Directions {
-			if grid.WordAt(r, c, 4, d) == "XMAS" {
+			if grid.WordAt(loc, 4, d) == "XMAS" {
 				count++
 			}
 		}
