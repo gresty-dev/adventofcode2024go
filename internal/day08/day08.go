@@ -28,39 +28,34 @@ func Execute(input io.Reader) (Result, Result) {
 
 func findAntinodes(rect image.Rectangle, antennae map[byte]pointList, finder antinodeFinder) pointSet {
 	antinodes := pointSet{}
-	for _, v := range antennae {
-		CombineSets(antinodes, antinodesForFrequency(rect, v, finder))
+	for _, nodesForFreq := range antennae {
+		ForEachPair(nodesForFreq, func(a, b image.Point) {
+			CombineSets(antinodes, finder(a, b, rect))
+		})
 	}
-	return antinodes
-}
-
-func antinodesForFrequency(rect image.Rectangle, nodes pointList, finder antinodeFinder) pointSet {
-	antinodes := pointSet{}
-
-	ForEachPair(nodes, func(a, b image.Point) {
-		CombineSets(antinodes, finder(a, b, rect))
-	})
 	return antinodes
 }
 
 func antinodesForPair(a, b image.Point, rect image.Rectangle) pointSet {
-	offset := b.Sub(a)
+	incr := b.Sub(a)
+
 	antinodes := pointSet{}
-	an1 := b.Add(offset)
+	an1 := b.Add(incr)
 	if an1.In(rect) {
 		antinodes[an1] = Empty
 	}
-	an2 := a.Sub(offset)
+	an2 := a.Sub(incr)
 	if an2.In(rect) {
 		antinodes[an2] = Empty
 	}
+
 	return antinodes
 }
 
 func allAntinodesForPair(a, b image.Point, rect image.Rectangle) pointSet {
-	offset := b.Sub(a)
-	gcd := Gcd(offset.X, offset.Y)
-	incr := offset.Div(gcd)
+	gap := b.Sub(a)
+	gcd := Gcd(gap.X, gap.Y)
+	incr := gap.Div(gcd)
 
 	antinodes := pointSet{}
 	for an := a; an.In(rect); an = an.Add(incr) {
