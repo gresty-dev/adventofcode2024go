@@ -6,39 +6,47 @@ import (
 	"io"
 )
 
-type cellhandler func(loc image.Point, value byte) bool
+type cellhandler[T comparable] func(loc image.Point, value T) bool
 
-type Grid struct {
-	cells [][]byte
+type Grid[T comparable] struct {
+	cells [][]T
 }
 
-func ReadGrid(input io.Reader) Grid {
+func NewGrid[T comparable](rows, columns int) Grid[T] {
+	grid := make([][]T, rows)
+	for r := range rows {
+		grid[r] = make([]T, columns)
+	}
+	return Grid[T]{grid}
+}
+
+func ReadGrid(input io.Reader) Grid[byte] {
 	grid := [][]byte{}
 	scanner := bufio.NewScanner(input)
 	for scanner.Scan() {
 		line := scanner.Text()
 		grid = append(grid, []byte(line))
 	}
-	return Grid{grid}
+	return Grid[byte]{grid}
 }
 
-func (g Grid) Cell(loc image.Point) byte {
+func (g Grid[T]) Cell(loc image.Point) T {
 	return g.cells[loc.X][loc.Y]
 }
 
-func (g *Grid) Set(loc image.Point, value byte) {
+func (g *Grid[T]) Set(loc image.Point, value T) {
 	g.cells[loc.X][loc.Y] = value
 }
 
-func (g Grid) Columns() int {
+func (g Grid[T]) Columns() int {
 	return len(g.cells[0])
 }
 
-func (g Grid) Rows() int {
+func (g Grid[T]) Rows() int {
 	return len(g.cells)
 }
 
-func (g Grid) ForEachCell(cellhandler cellhandler) {
+func (g Grid[T]) ForEachCell(cellhandler cellhandler[T]) {
 	for r := range g.Rows() {
 		for c := range g.Columns() {
 			loc := image.Point{r, c}
@@ -49,16 +57,27 @@ func (g Grid) ForEachCell(cellhandler cellhandler) {
 	}
 }
 
-func (g Grid) NearBoundary(loc image.Point, dist int) bool {
+func (g Grid[T]) ForEachNeighbour(loc image.Point, cellhandler cellhandler[T]) {
+	for _, d := range Directions4 {
+		n := loc.Add(d.Point)
+		if g.InGrid(n) {
+			if !cellhandler(n, g.Cell(n)) {
+				break
+			}
+		}
+	}
+}
+
+func (g Grid[T]) NearBoundary(loc image.Point, dist int) bool {
 	return loc.X <= dist || loc.Y <= dist ||
 		loc.X >= g.Rows()-dist-1 || loc.Y >= g.Columns()-dist-1
 }
 
-func (g Grid) InGrid(loc image.Point) bool {
+func (g Grid[T]) InGrid(loc image.Point) bool {
 	return loc.X >= 0 && loc.X < g.Rows() && loc.Y >= 0 && loc.Y < g.Columns()
 }
 
-func (g Grid) FindFirst(target byte) (image.Point, bool) {
+func (g Grid[T]) FindFirst(target T) (image.Point, bool) {
 	for r := range g.Rows() {
 		for c := range g.Columns() {
 			loc := image.Point{r, c}
@@ -70,16 +89,16 @@ func (g Grid) FindFirst(target byte) (image.Point, bool) {
 	return image.Point{0, 0}, false
 }
 
-func (g Grid) WordAt(loc image.Point, length int, dir Direction) string {
+func (g Grid[T]) WordAt(loc image.Point, length int, dir Direction) []T {
+	word := []T{}
 	limit := dir.Mul(length - 1)
 	if !g.InGrid(loc.Add(limit)) {
-		return ""
+		return word
 	}
 
-	word := []byte{}
 	for range length {
 		word = append(word, g.Cell(loc))
 		loc = loc.Add(dir.Point)
 	}
-	return string(word)
+	return word
 }

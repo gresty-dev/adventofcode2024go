@@ -28,6 +28,10 @@ var Directions = []Direction{
 	Up, UpRight, Right, DownRight, Down, DownLeft, Left, UpLeft,
 }
 
+var Directions4 = []Direction{
+	Up, Right, Down, Left,
+}
+
 var Up = Direction{image.Point{-1, 0}, nil, nil}
 var UpRight = Direction{image.Point{-1, 1}, &Up, nil}
 var Right = Direction{image.Point{0, 1}, &UpRight, nil}

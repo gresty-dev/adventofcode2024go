@@ -19,7 +19,7 @@ func Execute(input io.Reader) (aoc.Result, aoc.Result) {
 	return result1, result2
 }
 
-func countMasInX(grid aoc.Grid) int {
+func countMasInX(grid aoc.Grid[byte]) int {
 	count := 0
 
 	grid.ForEachCell(func(loc image.Point, v byte) bool {
@@ -32,7 +32,7 @@ func countMasInX(grid aoc.Grid) int {
 	return count
 }
 
-func masInXFound(grid aoc.Grid, loc image.Point) bool {
+func masInXFound(grid aoc.Grid[byte], loc image.Point) bool {
 	var sb strings.Builder
 	sb.WriteByte(grid.Cell(loc.Add(aoc.UpLeft.Point)))
 	sb.WriteByte(grid.Cell(loc.Add(aoc.DownRight.Point)))
@@ -42,14 +42,14 @@ func masInXFound(grid aoc.Grid, loc image.Point) bool {
 	return w == "MSMS" || w == "SMMS" || w == "MSSM" || w == "SMSM"
 }
 
-func countXmas(grid aoc.Grid) int {
+func countXmas(grid aoc.Grid[byte]) int {
 	count := 0
 	grid.ForEachCell(func(loc image.Point, v byte) bool {
 		if v != 'X' {
 			return true
 		}
 		for _, d := range aoc.Directions {
-			if grid.WordAt(loc, 4, d) == "XMAS" {
+			if string(grid.WordAt(loc, 4, d)) == "XMAS" {
 				count++
 			}
 		}

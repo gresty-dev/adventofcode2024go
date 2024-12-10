@@ -52,7 +52,7 @@ func Execute(input io.Reader) (aoc.Result, aoc.Result) {
 	return result1, result2
 }
 
-func walk(guard Guard, grid aoc.Grid) map[image.Point]void {
+func walk(guard Guard, grid aoc.Grid[byte]) map[image.Point]void {
 	visited := make(map[image.Point]void)
 	for grid.InGrid(guard.Point) {
 		visited[guard.Point] = empty
@@ -66,7 +66,7 @@ func walk(guard Guard, grid aoc.Grid) map[image.Point]void {
 	return visited
 }
 
-func loops(guard Guard, grid aoc.Grid, obstacles map[image.Point]void) int {
+func loops(guard Guard, grid aoc.Grid[byte], obstacles map[image.Point]void) int {
 	count := 0
 	for obstacle := range obstacles {
 		if obstacle == guard.Point {
@@ -79,7 +79,7 @@ func loops(guard Guard, grid aoc.Grid, obstacles map[image.Point]void) int {
 	return count
 }
 
-func walkWithObstacle(guard Guard, grid aoc.Grid, obstacle image.Point) bool {
+func walkWithObstacle(guard Guard, grid aoc.Grid[byte], obstacle image.Point) bool {
 	visited := make(map[visitedCell]void)
 	grid.Set(obstacle, '#')
 	defer grid.Set(obstacle, '.')
