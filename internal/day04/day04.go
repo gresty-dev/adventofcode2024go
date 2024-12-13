@@ -22,11 +22,10 @@ func Execute(input io.Reader) (aoc.Result, aoc.Result) {
 func countMasInX(grid aoc.Grid[byte]) int {
 	count := 0
 
-	grid.ForEachCell(func(loc image.Point, v byte) bool {
+	grid.ForEachCell(func(loc image.Point, v byte) {
 		if !grid.NearBoundary(loc, 0) && v == 'A' && masInXFound(grid, loc) {
 			count++
 		}
-		return true
 	})
 
 	return count
@@ -44,16 +43,14 @@ func masInXFound(grid aoc.Grid[byte], loc image.Point) bool {
 
 func countXmas(grid aoc.Grid[byte]) int {
 	count := 0
-	grid.ForEachCell(func(loc image.Point, v byte) bool {
-		if v != 'X' {
-			return true
-		}
-		for _, d := range aoc.Directions {
-			if string(grid.WordAt(loc, 4, d)) == "XMAS" {
-				count++
+	grid.ForEachCell(func(loc image.Point, v byte) {
+		if v == 'X' {
+			for _, d := range aoc.Directions {
+				if string(grid.WordAt(loc, 4, d)) == "XMAS" {
+					count++
+				}
 			}
 		}
-		return true
 	})
 	return count
 }
