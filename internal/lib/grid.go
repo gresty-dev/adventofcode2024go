@@ -2,6 +2,7 @@ package lib
 
 import (
 	"bufio"
+	"fmt"
 	"image"
 	"io"
 )
@@ -133,6 +134,15 @@ func (g Grid[T]) walkArea(loc image.Point, area *Area[T]) {
 			g.walkArea(n, area)
 		}
 	})
+}
+
+func (g Grid[T]) Dump() {
+	for r := range g.Rows() {
+		for c := range g.Columns() {
+			fmt.Print(g.cells[r][c])
+		}
+		fmt.Println()
+	}
 }
 
 type Area[T comparable] struct {
