@@ -22,10 +22,16 @@ func NewGrid[T comparable](rows, columns int) Grid[T] {
 }
 
 func ReadGrid(input io.Reader) Grid[byte] {
+	return ScanGrid(bufio.NewScanner(input))
+}
+
+func ScanGrid(scanner *bufio.Scanner) Grid[byte] {
 	grid := [][]byte{}
-	scanner := bufio.NewScanner(input)
 	for scanner.Scan() {
 		line := scanner.Text()
+		if len(line) == 0 {
+			break
+		}
 		grid = append(grid, []byte(line))
 	}
 	return Grid[byte]{grid}
