@@ -3,6 +3,7 @@ package lib
 import (
 	"fmt"
 	"io"
+	"strconv"
 	"time"
 )
 
@@ -52,4 +53,18 @@ func CombineSets[T comparable](m1, m2 map[T]Void) {
 	for a := range m2 {
 		m1[a] = Empty
 	}
+}
+
+func Atoi64(s string) int64 {
+	if i, err := strconv.ParseInt(s, 10, 64); err == nil {
+		return i
+	}
+	panic(fmt.Sprintf("Cannot convert %s to integer", s))
+}
+
+func Atoi(s string) int {
+	if i, err := strconv.Atoi(s); err == nil {
+		return i
+	}
+	panic(fmt.Sprintf("Cannot convert %s to integer", s))
 }
